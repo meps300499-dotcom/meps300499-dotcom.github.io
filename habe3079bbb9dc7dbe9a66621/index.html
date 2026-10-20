@@ -1,0 +1,23 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer">
+<title>…</title><style>html,body{margin:0;background:#0c0f22;color:#8a90b8;font:14px system-ui,sans-serif}
+#m{padding:40px 20px;text-align:center}</style></head><body><p id="m">…</p><script>
+(async()=>{
+  const k=new URLSearchParams(location.search).get("k"); if(!k) return;
+  const b64=s=>Uint8Array.from(atob(s.replace(/-/g,"+").replace(/_/g,"/")),c=>c.charCodeAt(0));
+  const key=await crypto.subtle.importKey("raw",b64(k),"AES-GCM",false,["decrypt"]);
+  async function dec(n){const r=await fetch(n+"?"+Date.now(),{cache:"no-store"});if(!r.ok)throw 0;
+    const b=b64((await r.text()).trim());
+    return new TextDecoder().decode(await crypto.subtle.decrypt({name:"AES-GCM",iv:b.slice(0,12)},key,b.slice(12)))}
+  window.HQ_FETCH=async()=>JSON.parse(await dec("d.bin"));
+  const doc=new DOMParser().parseFromString(await dec("p.bin"),"text/html");
+  document.title=doc.title||"Штаб";
+  doc.head.querySelectorAll("style").forEach(s=>document.head.append(document.importNode(s,true)));
+  document.body.innerHTML="";
+  for(const n of [...doc.body.childNodes]){
+    if(n.nodeName==="SCRIPT"){const s=document.createElement("script");
+      for(const a of n.attributes) s.setAttribute(a.name,a.value); s.textContent=n.textContent; document.body.append(s)}
+    else document.body.append(document.importNode(n,true))}
+})().catch(()=>{document.getElementById("m").textContent="Нет доступа"});
+</script></body></html>
