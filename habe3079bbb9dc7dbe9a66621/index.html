@@ -7,7 +7,11 @@
   const k=new URLSearchParams(location.search).get("k"); if(!k) return;
   const b64=s=>Uint8Array.from(atob(s.replace(/-/g,"+").replace(/_/g,"/")),c=>c.charCodeAt(0));
   const key=await crypto.subtle.importKey("raw",b64(k),"AES-GCM",false,["decrypt"]);
-  async function dec(n){const r=await fetch(n+"?"+Date.now(),{cache:"no-store"});if(!r.ok)throw 0;
+  const RAW="https://raw.githubusercontent.com/meps300499-dotcom/meps300499-dotcom.github.io/main/habe3079bbb9dc7dbe9a66621/";
+  async function get(n){ // сначала raw (свежее, без сборки сайта), иначе — с самого сайта
+    for(const u of [RAW+n+"?"+Date.now(), n+"?"+Date.now()]){try{const r=await fetch(u,{cache:"no-store"});if(r.ok)return r}catch(e){}}
+    throw 0}
+  async function dec(n){const r=await get(n);
     const b=b64((await r.text()).trim());
     return new TextDecoder().decode(await crypto.subtle.decrypt({name:"AES-GCM",iv:b.slice(0,12)},key,b.slice(12)))}
   window.HQ_FETCH=async()=>JSON.parse(await dec("d.bin"));
