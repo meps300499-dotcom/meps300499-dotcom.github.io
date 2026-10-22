@@ -17,7 +17,7 @@
   window.HQ_FETCH=async()=>JSON.parse(await dec("d.bin"));
   const doc=new DOMParser().parseFromString(await dec("p.bin"),"text/html");
   document.title=doc.title||"Штаб";
-  doc.head.querySelectorAll("style").forEach(s=>document.head.append(document.importNode(s,true)));
+  doc.head.querySelectorAll("style,link[rel=stylesheet],link[rel=preconnect]").forEach(s=>document.head.append(document.importNode(s,true)));
   document.body.innerHTML="";
   for(const n of [...doc.body.childNodes]){
     if(n.nodeName==="SCRIPT"){const s=document.createElement("script");
