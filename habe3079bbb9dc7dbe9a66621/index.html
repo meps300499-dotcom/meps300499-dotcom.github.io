@@ -15,6 +15,10 @@
     const b=b64((await r.text()).trim());
     return new TextDecoder().decode(await crypto.subtle.decrypt({name:"AES-GCM",iv:b.slice(0,12)},key,b.slice(12)))}
   window.HQ_FETCH=async()=>JSON.parse(await dec("d.bin"));
+  async function decA(n){let r=null;for(const u of [RAW+n,n]){try{const x=await fetch(u);if(x.ok){r=x;break}}catch(e){}}if(!r)throw 0;
+    const b=b64((await r.text()).trim());
+    return new TextDecoder().decode(await crypto.subtle.decrypt({name:"AES-GCM",iv:b.slice(0,12)},key,b.slice(12)))}
+  window.HQ_ASSET=async(n,type)=>URL.createObjectURL(new Blob([b64(await decA(n))],{type:type||"image/jpeg"}));
   const doc=new DOMParser().parseFromString(await dec("p.bin"),"text/html");
   document.title=doc.title||"Штаб";
   doc.head.querySelectorAll("style,link[rel=stylesheet],link[rel=preconnect]").forEach(s=>document.head.append(document.importNode(s,true)));
